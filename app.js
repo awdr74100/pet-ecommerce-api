@@ -22,7 +22,7 @@ const expressJwtOptions = {
 const expressJwtUnless = {
   path: [
     // /^\/*/,
-    { url: /^\/api\/v1\/admin\/login$/, methods: ['POST'] },
+    { url: /^\/api\/admin\/login$/, methods: ['POST'] },
   ],
 };
 
@@ -33,10 +33,9 @@ app.use(cookieParser());
 app.use(expressJwt(expressJwtOptions).unless(expressJwtUnless));
 
 // import Router
-const adminRouter = require('./router/admin');
+const admin = require('./router/admin/index');
 
-const version = 'v1';
-app.use(`/api/${version}/admin`, adminRouter);
+app.use('/api/admin', admin);
 
 // error handler
 app.use((err, req, res, next) => {

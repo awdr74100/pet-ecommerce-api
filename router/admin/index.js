@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
-const { db } = require('../connection/firebase-admin');
-const { auth } = require('../connection/firebase');
+const { db } = require('../../connection/firebase-admin');
+const { auth } = require('../../connection/firebase');
 
 // Issues: https://github.com/firebase/firebase-js-sdk/issues/1881
 
