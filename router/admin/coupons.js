@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
   };
   try {
     await db.ref('/coupons').push(coupon);
-    return res.send({ success: true, message: '優惠卷新增成功' });
+    return res.send({ success: true, message: '已新增優惠卷' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }
@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 修改指定優惠卷
+// 修改優惠卷
 router.patch('/:id', async (req, res) => {
   const { id } = req.params;
   const data = req.body;
@@ -44,22 +44,22 @@ router.patch('/:id', async (req, res) => {
   };
   try {
     const snapshot = await db.ref('/coupons').child(id).once('value');
-    if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });
+    if (!snapshot.exists()) return res.send({ success: false, message: '找不到優惠卷' });
     await db.ref('/coupons').child(id).update(coupon);
-    return res.send({ success: true, message: '優惠卷修改成功' });
+    return res.send({ success: true, message: '已修改優惠卷' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }
 });
 
-// 刪除指定優惠卷
+// 刪除優惠卷
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const snapshot = await db.ref('/coupons').child(id).once('value');
     if (!snapshot.exists()) return res.send({ success: false, message: '找不到優惠卷' });
     await db.ref('/coupons').child(id).remove();
-    return res.send({ success: true, message: '優惠卷刪除成功' });
+    return res.send({ success: true, message: '已刪除優惠卷' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }

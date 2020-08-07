@@ -14,10 +14,13 @@ admin.initializeApp({
     client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
   }),
   databaseURL: process.env.FIREBASE_DATABASEURL,
+  storageBucket: process.env.FIREBASE_STORAGEBUCKET,
 });
 
 const db = admin.database();
+const bucket = admin.storage().bucket();
 
 module.exports = {
   db,
+  bucket,
 };

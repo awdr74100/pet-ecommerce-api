@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
   };
   try {
     await db.ref('/products').push(product);
-    return res.send({ success: true, message: '產品新增成功' });
+    return res.send({ success: true, message: '以新增產品' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 修改指定產品
+// 修改產品
 router.patch('/:id', async (req, res) => {
   const { id } = req.params;
   const data = req.body;
@@ -51,20 +51,20 @@ router.patch('/:id', async (req, res) => {
     const snapshot = await db.ref('/products').child(id).once('value');
     if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });
     await db.ref('/products').child(id).update(product);
-    return res.send({ success: true, message: '產品修改成功' });
+    return res.send({ success: true, message: '已修改產品' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }
 });
 
-// 刪除指定產品
+// 刪除產品
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const snapshot = await db.ref('/products').child(id).once('value');
     if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });
     await db.ref('/products').child(id).remove();
-    return res.send({ success: true, message: '產品刪除成功' });
+    return res.send({ success: true, message: '已刪除產品' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }

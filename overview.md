@@ -27,7 +27,7 @@
 
 5. POST 新增產品 => /api/admin/products
 
-- (200):true - 產品新增成功
+- (200):true - 以新增產品
 - (500):false - error.message
 
 6. GET 取得產品列表 => /api/admin/products
@@ -35,15 +35,15 @@
 - (200):true - { 所有產品 }
 - (500):false - error.message
 
-7. PATCH 修改指定產品 => /api/admin/products/:id
+7. PATCH 修改產品 => /api/admin/products/:id
 
-- (200):true - 產品修改成功
+- (200):true - 已修改產品
 - (200):false - 找不到產品
 - (500):false - error.message
 
-8. DELETE 刪除指定產品 => /api/admin/products/:id
+8. DELETE 刪除產品 => /api/admin/products/:id
 
-- (200):true - 產品刪除成功
+- (200):true - 已刪除產品
 - (200):false - 找不到產品
 - (500):false - error.message
 
@@ -51,7 +51,7 @@
 
 9. POST 新增優惠卷 => /api/admin/coupons
 
-- (200):true - 優惠卷新增成功
+- (200):true - 已新增優惠卷
 - (500):false - error.message
 
 10. GET 取得優惠卷列表 => /api/admin/coupons
@@ -59,14 +59,24 @@
 - (200):true - { 所有優惠卷 }
 - (500):false - error.message
 
-11. PATCH 修改指定優惠卷 => /api/admin/coupons/:id
+11. PATCH 修改優惠卷 => /api/admin/coupons/:id
 
-- (200):true - 優惠卷修改成功
+- (200):true - 已修改優惠卷
 - (200):false - 找不到優惠卷
 - (500):false - error.message
 
-12. DELETE 刪除指定優惠卷 => /api/admin/coupons/:id
+12. DELETE 刪除優惠卷 => /api/admin/coupons/:id
 
-- (200):true - 優惠卷刪除成功
+- (200):true - 已刪除優惠卷
 - (200):false - 找不到優惠卷
+- (500):false - error.message
+
+---
+
+13. POST 上傳圖片 => /api/admin/upload
+
+- (200):true - { 圖片網址 }
+- (200):false - 欄位輸入不正確
+- (200):false - 不支援的檔案格式
+- (200):false - 超過圖片限制大小
 - (500):false - error.message
