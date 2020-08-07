@@ -67,7 +67,7 @@ router.post('/check', (req, res) => {
   const now = new Date().getMinutes();
   const interval = exp - now < 0 ? 60 + (exp - now) : exp - now;
   if (interval < 5) {
-    const token = jwt.sign({ id: req.user.id }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 15 });
+    const token = jwt.sign({ id: req.user.id }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 20 });
     return res
       .cookie('token', token, {
         httpOnly: true,

@@ -21,8 +21,8 @@ const expressJwtOptions = {
 
 const expressJwtUnless = {
   path: [
-    // /^\/*/,
-    { url: /^\/api\/admin\/login$/, methods: ['POST'] },
+    /^\/*/,
+    // { url: /^\/api\/admin\/login$/, methods: ['POST'] },
   ],
 };
 
@@ -34,8 +34,12 @@ app.use(expressJwt(expressJwtOptions).unless(expressJwtUnless));
 
 // import Router
 const admin = require('./router/admin/index');
+const adminProducts = require('./router/admin/products');
+const adminCoupons = require('./router/admin/coupons');
 
 app.use('/api/admin', admin);
+app.use('/api/admin/products', adminProducts);
+app.use('/api/admin/coupons', adminCoupons);
 
 // error handler
 app.use((err, req, res, next) => {
