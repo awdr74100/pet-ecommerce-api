@@ -8,7 +8,7 @@
 
 2. POST 管理員登入 => /api/admin/login
 
-- (200):true - { 管理員資料 }
+- (200):true - {{ account }}
 - (200):false - 無效電子郵件
 - (200):false - 帳號或密碼錯誤
 - (500):false - error.message
@@ -27,12 +27,12 @@
 
 5. POST 新增產品 => /api/admin/products
 
-- (200):true - 以新增產品
+- (200):true - 已新增產品
 - (500):false - error.message
 
 6. GET 取得產品列表 => /api/admin/products
 
-- (200):true - { 所有產品 }
+- (200):true - { products }
 - (500):false - error.message
 
 7. PATCH 修改產品 => /api/admin/products/:id
@@ -56,7 +56,7 @@
 
 10. GET 取得優惠卷列表 => /api/admin/coupons
 
-- (200):true - { 所有優惠卷 }
+- (200):true - { coupons }
 - (500):false - error.message
 
 11. PATCH 修改優惠卷 => /api/admin/coupons/:id
@@ -79,4 +79,9 @@
 - (200):false - 欄位輸入不正確
 - (200):false - 不支援的檔案格式
 - (200):false - 超過圖片限制大小
+- (500):false - error.message
+
+14. GET 取得產品列表 => /api/products
+
+- (200):truw - { products }
 - (500):false - error.message

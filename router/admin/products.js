@@ -19,7 +19,7 @@ router.post('/', async (req, res) => {
   };
   try {
     await db.ref('/products').push(product);
-    return res.send({ success: true, message: '以新增產品' });
+    return res.send({ success: true, message: '已新增產品' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }
@@ -29,12 +29,12 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const snapshot = await db.ref('/products').once('value');
-    const data = snapshot.val() || [];
-    const products = Object.entries(data).reduce((acc, cur) => {
-      acc.push({ ...cur[1], id: cur[0] });
-      return acc;
+    const products = snapshot.val() || [];
+    const productsToArray = Object.entries(products).reduce((arr, [id, value]) => {
+      const newArr = arr.concat({ id, ...value });
+      return newArr;
     }, []);
-    return res.send({ success: true, products });
+    return res.send({ success: true, products: productsToArray });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }
@@ -43,10 +43,8 @@ router.get('/', async (req, res) => {
 // 修改產品
 router.patch('/:id', async (req, res) => {
   const { id } = req.params;
-  const data = req.body;
-  const product = {
-    ...data,
-  };
+  const update = req.body;
+  const product = { ...update };
   try {
     const snapshot = await db.ref('/products').child(id).once('value');
     if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });

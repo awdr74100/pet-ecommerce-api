@@ -24,12 +24,12 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const snapshot = await db.ref('/coupons').once('value');
-    const data = snapshot.val() || [];
-    const coupons = Object.entries(data).reduce((acc, cur) => {
-      acc.push({ ...cur[1], id: cur[0] });
-      return acc;
+    const coupons = snapshot.val() || [];
+    const couponsToArray = Object.entries(coupons).reduce((arr, [id, value]) => {
+      const newArr = arr.concat({ id, ...value });
+      return newArr;
     }, []);
-    return res.send({ success: true, coupons });
+    return res.send({ success: true, coupons: couponsToArray });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }
@@ -38,10 +38,8 @@ router.get('/', async (req, res) => {
 // 修改優惠卷
 router.patch('/:id', async (req, res) => {
   const { id } = req.params;
-  const data = req.body;
-  const coupon = {
-    ...data,
-  };
+  const update = req.body;
+  const coupon = { ...update };
   try {
     const snapshot = await db.ref('/coupons').child(id).once('value');
     if (!snapshot.exists()) return res.send({ success: false, message: '找不到優惠卷' });
