@@ -85,3 +85,10 @@
 
 - (200):truw - { products }
 - (500):false - error.message
+
+15. GET 取得指定產品 => /api/products/:id
+
+- (200):true - { product }
+- (200):false - 找不到產品
+- (200):flase - 產品未啟用
+- (500):false - error.message

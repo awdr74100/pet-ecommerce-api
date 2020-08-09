@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     unit: data.unit || '',
     description: data.description || '',
     content: data.content || '',
-    is_enabled: data.is_enabled || true,
+    is_enabled: data.is_enabled === undefined ? true : data.is_enabled,
     num: data.num || 1,
     imgUrl: data.imgUrl || '',
     created_at: Date.now(),

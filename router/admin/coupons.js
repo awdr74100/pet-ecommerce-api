@@ -6,7 +6,7 @@ router.post('/', async (req, res) => {
   const data = req.body;
   const coupon = {
     title: data.title || '',
-    is_enabled: data.is_enabled || true,
+    is_enabled: data.is_enabled === undefined ? true : data.is_enabled,
     percent: data.percent || 100,
     due_date: data.due_date || 0,
     code: data.code || '',
