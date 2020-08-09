@@ -8,7 +8,7 @@
 
 2. POST 管理員登入 => /api/admin/login
 
-- (200):true - {{ account }}
+- (200):true - {{ admin }}
 - (200):false - 無效電子郵件
 - (200):false - 帳號或密碼錯誤
 - (500):false - error.message

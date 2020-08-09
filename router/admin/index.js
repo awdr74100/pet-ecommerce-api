@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
           // sameSite: 'none',
           // secure: true,
         })
-        .send({ success: true, account: { email: user.email, nickname } });
+        .send({ success: true, admin: { email: user.email, nickname } });
     })
     .catch((error) => {
       if (error.code === 'auth/invalid-email') return res.send({ success: false, message: '無效電子郵件' });
