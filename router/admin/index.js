@@ -27,14 +27,15 @@ router.post('/signup', async (req, res) => {
 });
 
 // 管理員登入
-router.post('/login', async (req, res) => {
+router.post('/signin', async (req, res) => {
   const { email, password } = req.body;
   auth
     .signInWithEmailAndPassword(email, password)
     .then(async ({ user }) => {
       const snapshot = await db.ref('/admin').child(user.uid).once('value');
+      if (!snapshot.exists()) throw new Error('user-not-found');
       const { nickname } = snapshot.val();
-      const aToken = jwt.sign({ uid: user.uid, role: 'admin' }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
+      const aToken = jwt.sign({ uid: user.uid }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
       return res
         .cookie('aToken', aToken, {
           httpOnly: true,
@@ -47,13 +48,14 @@ router.post('/login', async (req, res) => {
     .catch((error) => {
       if (error.code === 'auth/invalid-email') return res.send({ success: false, message: '無效電子郵件' });
       if (error.code === 'auth/user-not-found') return res.send({ success: false, message: '帳號或密碼錯誤' });
+      if (error.message === 'user-not-found') return res.send({ success: false, message: '帳號或密碼錯誤' });
       if (error.code === 'auth/wrong-password') return res.send({ success: false, message: '帳號或密碼錯誤' });
       return res.status(500).send({ success: false, message: error.message });
     });
 });
 
 // 管理員登出
-router.post('/logout', (req, res) => {
+router.post('/signout', (req, res) => {
   res.clearCookie('aToken', {
     // sameSite: 'none',
     // secure: true,

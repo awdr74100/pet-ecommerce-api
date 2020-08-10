@@ -25,10 +25,10 @@ const expressJwtUnless = {
   path: [
     // /^\/*/,
     { url: /^\/api\/products/ },
-    { url: /^\/api\/admin\/login$/ },
-    { url: /^\/api\/user\/login$/ },
+    { url: /^\/api\/admin\/signin$/ },
+    { url: /^\/api\/admin\/signup$/ },
+    { url: /^\/api\/user\/signin$/ },
     { url: /^\/api\/user\/signup$/ },
-
   ],
 };
 
@@ -46,6 +46,7 @@ const adminUpload = require('./router/admin/upload');
 const user = require('./router/user/index');
 const products = require('./router/products');
 const cart = require('./router/cart');
+const coupon = require('./router/coupon');
 
 app.use('/api/admin', admin);
 app.use('/api/admin/products', adminProducts);
@@ -54,6 +55,7 @@ app.use('/api/admin/upload', adminUpload);
 app.use('/api/user', user);
 app.use('/api/products', products);
 app.use('/api/cart', cart);
+app.use('/api/coupon', coupon);
 
 // error handler
 app.use((err, req, res, next) => {

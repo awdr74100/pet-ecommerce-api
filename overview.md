@@ -6,14 +6,14 @@
 - (200):false - 密碼強度不夠
 - (500):false - error.message
 
-2. POST 管理員登入 => /api/admin/login
+2. POST 管理員登入 => /api/admin/signin
 
 - (200):true - {{ admin }}
 - (200):false - 無效電子郵件
-- (200):false - 帳號或密碼錯誤
+- (200):false - 帳號或密碼錯誤 * 3
 - (500):false - error.message
 
-3. POST 管理員登出 => /api/admin/logout
+3. POST 管理員登出 => /api/admin/signout
 
 - (200):true - 已登出
 
@@ -103,14 +103,14 @@
 - (200):false - 密碼強度不夠
 - (500):false - error.message
 
-17. POST 用戶登入 => /api/user/login
+17. POST 用戶登入 => /api/user/signin
 
 - (200):true - {{ user }}
 - (200):false - 無效電子郵件
 - (200):false - 帳號或密碼錯誤
 - (500):false - error.message
 
-18. POST 用戶登出 => /api/user/logout
+18. POST 用戶登出 => /api/user/signout
 
 - (200):true - 已登出
 

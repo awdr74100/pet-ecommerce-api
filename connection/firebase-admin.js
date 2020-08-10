@@ -19,8 +19,10 @@ admin.initializeApp({
 
 const db = admin.database();
 const bucket = admin.storage().bucket();
+const adminAuth = admin.auth();
 
 module.exports = {
   db,
   bucket,
+  adminAuth,
 };
