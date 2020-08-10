@@ -14,7 +14,9 @@ const expressJwtOptions = {
   secret: process.env.JWT_SECRET,
   algorithms: ['HS256'],
   getToken: function fromHeaderOrQuerystring(req) {
-    if (req.cookies.token) return req.cookies.token;
+    const role = /^\/api\/(?!admin)/.test(req.originalUrl) ? 'user' : 'admin';
+    if (role === 'user' && req.cookies.uToken) return req.cookies.uToken;
+    if (role === 'admin' && req.cookies.aToken) return req.cookies.aToken;
     return null;
   },
 };
@@ -22,8 +24,11 @@ const expressJwtOptions = {
 const expressJwtUnless = {
   path: [
     // /^\/*/,
-    { url: /^\/api\/(?!admin)/ },
-    { url: /^\/api\/admin\/login$/, methods: ['POST'] },
+    { url: /^\/api\/products/ },
+    { url: /^\/api\/admin\/login$/ },
+    { url: /^\/api\/user\/login$/ },
+    { url: /^\/api\/user\/signup$/ },
+
   ],
 };
 
@@ -38,13 +43,17 @@ const admin = require('./router/admin/index');
 const adminProducts = require('./router/admin/products');
 const adminCoupons = require('./router/admin/coupons');
 const adminUpload = require('./router/admin/upload');
+const user = require('./router/user/index');
 const products = require('./router/products');
+const cart = require('./router/cart');
 
 app.use('/api/admin', admin);
 app.use('/api/admin/products', adminProducts);
 app.use('/api/admin/coupons', adminCoupons);
 app.use('/api/admin/upload', adminUpload);
+app.use('/api/user', user);
 app.use('/api/products', products);
+app.use('/api/cart', cart);
 
 // error handler
 app.use((err, req, res, next) => {

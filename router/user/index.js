@@ -5,16 +5,15 @@ const { auth } = require('../../connection/firebase');
 
 // Issues: https://github.com/firebase/firebase-js-sdk/issues/1881
 
-// 管理員註冊
+// 用戶註冊
 router.post('/signup', async (req, res) => {
-  const { email, password, nickname } = req.body;
+  const { email, password } = req.body;
   auth
     .createUserWithEmailAndPassword(email, password)
     .then(async ({ user }) => {
-      await db.ref('/admin').child(user.uid).set({
+      await db.ref('/user').child(user.uid).set({
         uid: user.uid,
         email,
-        nickname,
       });
       return res.send({ success: true, message: '註冊成功' });
     })
@@ -26,23 +25,21 @@ router.post('/signup', async (req, res) => {
     });
 });
 
-// 管理員登入
+// 用戶登入
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   auth
     .signInWithEmailAndPassword(email, password)
     .then(async ({ user }) => {
-      const snapshot = await db.ref('/admin').child(user.uid).once('value');
-      const { nickname } = snapshot.val();
-      const aToken = jwt.sign({ uid: user.uid, role: 'admin' }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
+      const uToken = jwt.sign({ uid: user.uid, role: 'user' }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
       return res
-        .cookie('aToken', aToken, {
+        .cookie('uToken', uToken, {
           httpOnly: true,
           maxAge: 1000 * 60 * 30, // 30min
           // sameSite: 'none',
           // secure: true,
         })
-        .send({ success: true, admin: { email: user.email, nickname } });
+        .send({ success: true, user: { email: user.email } });
     })
     .catch((error) => {
       if (error.code === 'auth/invalid-email') return res.send({ success: false, message: '無效電子郵件' });
@@ -52,9 +49,9 @@ router.post('/login', async (req, res) => {
     });
 });
 
-// 管理員登出
+// 用戶登出
 router.post('/logout', (req, res) => {
-  res.clearCookie('aToken', {
+  res.clearCookie('uToken', {
     // sameSite: 'none',
     // secure: true,
   });
@@ -67,9 +64,9 @@ router.post('/check', (req, res) => {
   const now = new Date().getMinutes();
   const interval = exp - now < 0 ? 60 + (exp - now) : exp - now;
   if (interval < 5) {
-    const aToken = jwt.sign({ id: req.user.id }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
+    const uToken = jwt.sign({ id: req.user.id }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
     return res
-      .cookie('aToken', aToken, {
+      .cookie('uToken', uToken, {
         httpOnly: true,
         maxAge: 1000 * 60 * 30, // 30min
         // sameSite: 'none',

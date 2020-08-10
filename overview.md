@@ -92,3 +92,56 @@
 - (200):false - 找不到產品
 - (200):flase - 產品未啟用
 - (500):false - error.message
+
+---
+
+16. POST 用戶註冊 => /api/user/signup
+
+- (200):true - 註冊成功
+- (200):false - 無效電子郵件
+- (200):false - 已存在用戶
+- (200):false - 密碼強度不夠
+- (500):false - error.message
+
+17. POST 用戶登入 => /api/user/login
+
+- (200):true - {{ user }}
+- (200):false - 無效電子郵件
+- (200):false - 帳號或密碼錯誤
+- (500):false - error.message
+
+18. POST 用戶登出 => /api/user/logout
+
+- (200):true - 已登出
+
+19. POST 檢查用戶是否持續登入 => /api/user/check
+
+- (200):true - interval > 5 ? 刷新 : 不刷新
+- (200):false - 未帶有訪問令牌
+- (200):false - 無效的訪問令牌
+
+---
+
+20. POST 產品加入購物車 => /api/cart
+
+- (200):true - 已加入購物車
+- (200):true - 找不到產品
+- (500):false - error.message
+
+21. GET 取得購物車產品列表 => /api/cart
+
+- (200):true - {{ cart }}
+- (500):false - error.message
+
+22. PATCH 修改購物車產品購買數量 => /api/cart/:id
+
+- (200):true - 已修改產品購買數量
+- (200):true - 找不到產品
+- (500):false - error.message
+
+23. DELETE 刪除購物車產品 => /api/cart/:id
+
+- (200):true - 已刪除購物車產品
+- (200):true - 找不到產品
+- (500):false - error.message
+
