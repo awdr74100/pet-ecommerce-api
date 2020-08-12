@@ -8,7 +8,7 @@ router.post('/', async (req, res) => {
     title: data.title || '',
     category: data.category || '',
     origin_price: data.origin_price || 0,
-    price: data.price || 0,
+    price: data.price || data.origin_price,
     unit: data.unit || '',
     description: data.description || '',
     content: data.content || '',

@@ -13,6 +13,9 @@ router.post('/', async (req, res) => {
     created_at: Date.now(),
   };
   try {
+    const snapshot = await db.ref('/coupons').once('value');
+    const repeat = Object.values(snapshot.val() || []).some((item) => item.code === data.code);
+    if (repeat) return res.send({ success: false, message: '重複代碼' });
     await db.ref('/coupons').push(coupon);
     return res.send({ success: true, message: '已新增優惠卷' });
   } catch (error) {

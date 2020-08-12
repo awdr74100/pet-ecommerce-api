@@ -63,7 +63,7 @@ router.post('/signout', (req, res) => {
   return res.send({ success: true, message: '已登出' });
 });
 
-// 檢查是否持續登入
+// 檢查管理員是否持續登入
 router.post('/check', (req, res) => {
   const exp = new Date(req.user.exp * 1000).getMinutes();
   const now = new Date().getMinutes();

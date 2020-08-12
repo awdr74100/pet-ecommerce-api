@@ -6,16 +6,31 @@ router.post('/', async (req, res) => {
   const { uid } = req.user;
   const { productId, qty } = req.body;
   try {
-    const snapshot = await db.ref('/products').child(productId).once('value');
-    if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });
-    const product = { ...snapshot.val(), id: productId };
-    const tPrice = product.price * qty;
-    const ftPrice = product.price * qty;
+    // 檢查產品是否存在或未啟用或庫存足夠
+    const productSnapshot = await db.ref('/products').child(productId).once('value');
+    if (!productSnapshot.exists()) return res.send({ success: false, message: '找不到產品' });
+    const product = productSnapshot.val();
+    if (!product.is_enabled) return res.send({ success: false, message: '產品未啟用' });
+    const cartSnapshot = await db.ref('/carts').child(uid).once('value');
+    const cart = cartSnapshot.val() || [];
+    const cartProduct = Object.entries(cart).find(([, value]) => value.productId === productId);
+    // 加入購物車 (存在購物車)
+    if (cartProduct) {
+      const [cartProductId, cartProductContent] = cartProduct;
+      if (product.num - (cartProductContent.qty + qty) < 0) return res.send({ success: false, message: '庫存不足' });
+      await db
+        .ref('/carts')
+        .child(uid)
+        .child(cartProductId)
+        .update({ qty: cartProductContent.qty + qty });
+      return res.send({ success: true, message: '已加入購物車' });
+    }
+    // 加入購物車 (不存在購物車)
+    if (product.num - qty < 0) return res.send({ success: false, message: '庫存不足' });
     await db.ref('/carts').child(uid).push({
-      product,
+      coupon: '',
+      productId,
       qty,
-      tPrice,
-      ftPrice,
       created_at: Date.now(),
     });
     return res.send({ success: true, message: '已加入購物車' });
@@ -28,20 +43,34 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   const { uid } = req.user;
   try {
-    const snapshot = await db.ref('/carts').child(uid).once('value');
-    const cart = snapshot.val() || [];
-    let tPrice = 0;
-    let ftPrice = 0;
-    const cartToArray = Object.entries(cart).reduce((arr, [cartId, value]) => {
-      tPrice += value.tPrice;
-      ftPrice += value.ftPrice;
-      return arr.concat({ id: cartId, ...value });
+    const cartSnapshot = await db.ref('carts').child(uid).once('value');
+    const cart = cartSnapshot.val();
+    if (!cart) return res.send({ success: true, cart: [] });
+    const productsSnapshot = await db.ref('/products').once('value');
+    const products = productsSnapshot.val();
+    const cartToArray = Object.entries(cart).reduce((arr, cartProduct) => {
+      const [cartProductId, { coupon, productId, qty }] = cartProduct;
+      const [, data] = Object.entries(products).find(([id]) => id === productId);
+      return arr.concat({
+        id: cartProductId,
+        coupon,
+        product: { id: productId, ...data },
+        qty,
+        total: data.price * qty,
+        final_total: data.price * qty * ((coupon.percent || 100) / 100),
+      });
     }, []);
+    let total = 0;
+    let finalTotal = 0;
+    cartToArray.forEach((item) => {
+      total += item.total;
+      finalTotal += item.final_total;
+    });
     return res.send({
       success: true,
       cart: cartToArray,
-      tPrice,
-      ftPrice,
+      total,
+      final_total: finalTotal,
     });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
@@ -54,12 +83,13 @@ router.patch('/:id', async (req, res) => {
   const { id } = req.params;
   const { qty } = req.body;
   try {
-    const snapshot = await db.ref('/carts').child(uid).child(id).once('value');
-    if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });
-    const cartProduct = snapshot.val();
-    const tPrice = cartProduct.product.price * qty;
-    const ftPrice = cartProduct.product.price * qty;
-    await db.ref('/carts').child(uid).child(id).update({ qty, tPrice, ftPrice });
+    const cartProductSnapshot = await db.ref('/carts').child(uid).child(id).once('value');
+    if (!cartProductSnapshot.exists()) return res.send({ success: true, message: '找不到產品' });
+    const { productId } = cartProductSnapshot.val();
+    const productSnapshot = await db.ref('/products').child(productId).once('value');
+    const { num } = productSnapshot.val();
+    if (num - qty < 0) return res.send({ success: false, message: '庫存不足' });
+    await db.ref('/carts').child(uid).child(id).update({ qty });
     return res.send({ success: true, message: '已修改產品購買數量' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
@@ -71,10 +101,21 @@ router.delete('/:id', async (req, res) => {
   const { uid } = req.user;
   const { id } = req.params;
   try {
-    const snapshot = await db.ref('/carts').child(uid).child(id).once('value');
-    if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });
+    const cartProductSnapshot = await db.ref('/carts').child(uid).child(id).once('value');
+    if (!cartProductSnapshot.exists()) return res.send({ success: false, message: '找不到產品' });
     await db.ref('/carts').child(uid).child(id).remove();
     return res.send({ success: true, message: '已刪除購物車產品' });
+  } catch (error) {
+    return res.status(500).send({ success: false, message: error.message });
+  }
+});
+
+// 清空購物車
+router.delete('/', async (req, res) => {
+  const { uid } = req.user;
+  try {
+    await db.ref('/carts').child(uid).remove();
+    return res.send({ success: true, message: '已清空購物車' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }

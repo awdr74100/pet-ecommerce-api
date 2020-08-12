@@ -10,14 +10,14 @@
 
 - (200):true - {{ admin }}
 - (200):false - 無效電子郵件
-- (200):false - 帳號或密碼錯誤 * 3
+- (200):false - 帳號或密碼錯誤 / 3
 - (500):false - error.message
 
 3. POST 管理員登出 => /api/admin/signout
 
 - (200):true - 已登出
 
-4. POST 檢查用戶是否持續登入 => /api/admin/check
+4. POST 檢查管理員是否持續登入 => /api/admin/check
 
 - (200):true - interval > 5 ? 刷新 : 不刷新
 - (200):false - 未帶有訪問令牌
@@ -52,6 +52,7 @@
 9. POST 新增優惠卷 => /api/admin/coupons
 
 - (200):true - 已新增優惠卷
+- (200):false - 重複代碼
 - (500):false - error.message
 
 10. GET 取得優惠卷列表 => /api/admin/coupons
@@ -81,6 +82,8 @@
 - (200):false - 超過圖片限制大小
 - (500):false - error.message
 
+---
+
 14. GET 取得產品列表 => /api/products
 
 - (200):truw - { products }
@@ -107,7 +110,7 @@
 
 - (200):true - {{ user }}
 - (200):false - 無效電子郵件
-- (200):false - 帳號或密碼錯誤
+- (200):false - 帳號或密碼錯誤 / 3
 - (500):false - error.message
 
 18. POST 用戶登出 => /api/user/signout
@@ -125,7 +128,9 @@
 20. POST 產品加入購物車 => /api/cart
 
 - (200):true - 已加入購物車
-- (200):true - 找不到產品
+- (200):false - 找不到產品
+- (200):false - 產品未啟用
+- (200):false - 庫存不足 * 2
 - (500):false - error.message
 
 21. GET 取得購物車產品列表 => /api/cart
@@ -136,12 +141,25 @@
 22. PATCH 修改購物車產品購買數量 => /api/cart/:id
 
 - (200):true - 已修改產品購買數量
-- (200):true - 找不到產品
+- (200):false - 找不到產品
+- (200):false - 庫存不足
 - (500):false - error.message
 
 23. DELETE 刪除購物車產品 => /api/cart/:id
 
 - (200):true - 已刪除購物車產品
-- (200):true - 找不到產品
+- (200):false - 找不到產品
 - (500):false - error.message
 
+24. DELETE 清空購物車 => /api/cart
+
+- (200):true - 已清空購物車
+- (500):false - error.message
+
+25. POST 套用優惠卷 => /api/coupon
+
+- (200):true - 已套用優惠卷
+- (200):false - 找不到優惠卷
+- (200):false - 優惠卷未啟用
+- (200):false - 優惠卷已過期
+- (500):false - error.message
