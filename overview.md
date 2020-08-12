@@ -125,7 +125,7 @@
 
 ---
 
-20. POST 產品加入購物車 => /api/cart
+20. POST 產品加入購物車 => /api/user/cart
 
 - (200):true - 已加入購物車
 - (200):false - 找不到產品
@@ -133,30 +133,32 @@
 - (200):false - 庫存不足 * 2
 - (500):false - error.message
 
-21. GET 取得購物車產品列表 => /api/cart
+21. GET 取得購物車產品列表 => /api/user/cart
 
 - (200):true - {{ cart }}
 - (500):false - error.message
 
-22. PATCH 修改購物車產品購買數量 => /api/cart/:id
+22. PATCH 修改購物車產品購買數量 => /api/user/cart/:id
 
 - (200):true - 已修改產品購買數量
 - (200):false - 找不到產品
 - (200):false - 庫存不足
 - (500):false - error.message
 
-23. DELETE 刪除購物車產品 => /api/cart/:id
+23. DELETE 刪除購物車產品 => /api/user/cart/:id
 
 - (200):true - 已刪除購物車產品
 - (200):false - 找不到產品
 - (500):false - error.message
 
-24. DELETE 清空購物車 => /api/cart
+24. DELETE 清空購物車 => /api/user/cart
 
 - (200):true - 已清空購物車
 - (500):false - error.message
 
-25. POST 套用優惠卷 => /api/coupon
+---
+
+25. POST 套用優惠卷 => /api/user/coupon
 
 - (200):true - 已套用優惠卷
 - (200):false - 找不到優惠卷

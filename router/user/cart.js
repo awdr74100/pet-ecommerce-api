@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { db } = require('../connection/firebase-admin');
+const { db } = require('../../connection/firebase-admin');
 
 // 產品加入購物車
 router.post('/', async (req, res) => {
@@ -45,7 +45,14 @@ router.get('/', async (req, res) => {
   try {
     const cartSnapshot = await db.ref('carts').child(uid).once('value');
     const cart = cartSnapshot.val();
-    if (!cart) return res.send({ success: true, cart: [] });
+    if (!cart) {
+      return res.send({
+        success: true,
+        cart: [],
+        total: 0,
+        final_total: 0,
+      });
+    }
     const productsSnapshot = await db.ref('/products').once('value');
     const products = productsSnapshot.val();
     const cartToArray = Object.entries(cart).reduce((arr, cartProduct) => {

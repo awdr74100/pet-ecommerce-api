@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { db } = require('../connection/firebase-admin');
+const { db } = require('../../connection/firebase-admin');
 
 // 套用優惠卷
 router.post('/', async (req, res) => {

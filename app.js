@@ -44,18 +44,18 @@ const adminProducts = require('./router/admin/products');
 const adminCoupons = require('./router/admin/coupons');
 const adminUpload = require('./router/admin/upload');
 const user = require('./router/user/index');
+const cart = require('./router/user/cart');
+const coupon = require('./router/user/coupon');
 const products = require('./router/products');
-const cart = require('./router/cart');
-const coupon = require('./router/coupon');
 
 app.use('/api/admin', admin);
 app.use('/api/admin/products', adminProducts);
 app.use('/api/admin/coupons', adminCoupons);
 app.use('/api/admin/upload', adminUpload);
 app.use('/api/user', user);
+app.use('/api/user/cart', cart);
+app.use('/api/user/coupon', coupon);
 app.use('/api/products', products);
-app.use('/api/cart', cart);
-app.use('/api/coupon', coupon);
 
 // error handler
 app.use((err, req, res, next) => {
