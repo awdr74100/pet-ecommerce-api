@@ -44,8 +44,10 @@ const adminProducts = require('./router/admin/products');
 const adminCoupons = require('./router/admin/coupons');
 const adminUpload = require('./router/admin/upload');
 const user = require('./router/user/index');
-const cart = require('./router/user/cart');
-const coupon = require('./router/user/coupon');
+const userCart = require('./router/user/cart');
+const userCoupon = require('./router/user/coupon');
+const userOrder = require('./router/user/order');
+const userPay = require('./router/user/pay');
 const products = require('./router/products');
 
 app.use('/api/admin', admin);
@@ -53,8 +55,10 @@ app.use('/api/admin/products', adminProducts);
 app.use('/api/admin/coupons', adminCoupons);
 app.use('/api/admin/upload', adminUpload);
 app.use('/api/user', user);
-app.use('/api/user/cart', cart);
-app.use('/api/user/coupon', coupon);
+app.use('/api/user/cart', userCart);
+app.use('/api/user/coupon', userCoupon);
+app.use('/api/user/order', userOrder);
+app.use('/api/user/pay', userPay);
 app.use('/api/products', products);
 
 // error handler

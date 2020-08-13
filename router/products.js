@@ -16,15 +16,15 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 取得指定產品
+// 取得單一產品細節
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
     const snapshot = await db.ref('/products').child(id).once('value');
+    if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });
     const product = snapshot.val();
-    if (!product) return res.send({ success: false, message: '找不到產品' });
     if (!product.is_enabled) return res.send({ success: false, message: '產品未啟用' });
-    return res.send({ success: true, product });
+    return res.send({ success: true, product: { id, ...product } });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
   }

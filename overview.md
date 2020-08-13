@@ -89,7 +89,7 @@
 - (200):truw - { products }
 - (500):false - error.message
 
-15. GET 取得指定產品 => /api/products/:id
+15. GET 取得單一產品細節 => /api/products/:id
 
 - (200):true - { product }
 - (200):false - 找不到產品
@@ -108,7 +108,7 @@
 
 17. POST 用戶登入 => /api/user/signin
 
-- (200):true - {{ user }}
+- (200):true - { user }
 - (200):false - 無效電子郵件
 - (200):false - 帳號或密碼錯誤 / 3
 - (500):false - error.message
@@ -135,7 +135,7 @@
 
 21. GET 取得購物車產品列表 => /api/user/cart
 
-- (200):true - {{ cart }}
+- (200):true - { cart }
 - (500):false - error.message
 
 22. PATCH 修改購物車產品購買數量 => /api/user/cart/:id
@@ -164,4 +164,31 @@
 - (200):false - 找不到優惠卷
 - (200):false - 優惠卷未啟用
 - (200):false - 優惠卷已過期
+- (500):false - error.message
+
+---
+
+26. POST 建立訂單 => /api/user/order
+
+- (200):true - 已建立訂單
+- (200):false - 購物車目前為空
+- (200):false - 留言欄位為必填
+- (200):false - 購買人資料為必填
+- (500):false - error.message
+
+27. GET 查詢所有訂單 => /api/user/order
+
+- (200):true - { orders }
+- (500):false - error.message
+
+28. GET 查詢某一筆訂單 => /api/user/order/:id
+
+- (200):true - { order }
+- (200):true - 找不到訂單
+- (500):false - error.messahe
+
+29. POST 結帳付款 => /api/user/pay/:id
+
+- (200):true - 付款完成
+- (200):false - 找不到訂單
 - (500):false - error.message

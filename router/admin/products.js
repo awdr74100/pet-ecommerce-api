@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     description: data.description || '',
     content: data.content || '',
     is_enabled: data.is_enabled === undefined ? true : data.is_enabled,
-    num: data.num || 1,
+    stock: data.stock || 1,
     imgUrl: data.imgUrl || '',
     created_at: Date.now(),
   };
