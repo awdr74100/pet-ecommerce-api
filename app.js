@@ -42,22 +42,24 @@ app.use(expressJwt(expressJwtOptions).unless(expressJwtUnless));
 const admin = require('./router/admin/index');
 const adminProducts = require('./router/admin/products');
 const adminCoupons = require('./router/admin/coupons');
+const adminOrders = require('./router/admin/orders');
 const adminUpload = require('./router/admin/upload');
 const user = require('./router/user/index');
 const userCart = require('./router/user/cart');
 const userCoupon = require('./router/user/coupon');
-const userOrder = require('./router/user/order');
+const userOrders = require('./router/user/orders');
 const userPay = require('./router/user/pay');
 const products = require('./router/products');
 
 app.use('/api/admin', admin);
 app.use('/api/admin/products', adminProducts);
 app.use('/api/admin/coupons', adminCoupons);
+app.use('/api/admin/orders', adminOrders);
 app.use('/api/admin/upload', adminUpload);
 app.use('/api/user', user);
 app.use('/api/user/cart', userCart);
 app.use('/api/user/coupon', userCoupon);
-app.use('/api/user/order', userOrder);
+app.use('/api/user/order', userOrders);
 app.use('/api/user/pay', userPay);
 app.use('/api/products', products);
 

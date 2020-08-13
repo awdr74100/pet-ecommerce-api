@@ -54,7 +54,7 @@ router.post('/', async (req, res) => {
   }
 });
 
-// 查詢所有訂單
+// 取得訂單列表
 router.get('/', async (req, res) => {
   const { uid } = req.user;
   try {
@@ -73,7 +73,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 查詢某一筆訂單
+// 取得某一筆訂單
 router.get('/:id', async (req, res) => {
   const { uid } = req.user;
   const { id } = req.params;

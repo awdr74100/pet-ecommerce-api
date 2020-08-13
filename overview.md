@@ -74,6 +74,13 @@
 
 ---
 
+0. GET 取得訂單列表 => /api/admin/orders
+
+- (200):true - { orders }
+- (500):false - error.message
+
+---
+
 13. POST 上傳圖片 => /api/admin/upload
 
 - (200):true - { 圖片網址 }
@@ -130,7 +137,7 @@
 - (200):true - 已加入購物車
 - (200):false - 找不到產品
 - (200):false - 產品未啟用
-- (200):false - 庫存不足 * 2
+- (200):false - 庫存不足 \* 2
 - (500):false - error.message
 
 21. GET 取得購物車產品列表 => /api/user/cart
@@ -176,12 +183,12 @@
 - (200):false - 購買人資料為必填
 - (500):false - error.message
 
-27. GET 查詢所有訂單 => /api/user/order
+27. GET 取得訂單列表 => /api/user/order
 
 - (200):true - { orders }
 - (500):false - error.message
 
-28. GET 查詢某一筆訂單 => /api/user/order/:id
+28. GET 取得某一筆訂單 => /api/user/order/:id
 
 - (200):true - { order }
 - (200):true - 找不到訂單
