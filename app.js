@@ -59,7 +59,7 @@ app.use('/api/admin/upload', adminUpload);
 app.use('/api/user', user);
 app.use('/api/user/cart', userCart);
 app.use('/api/user/coupon', userCoupon);
-app.use('/api/user/order', userOrders);
+app.use('/api/user/orders', userOrders);
 app.use('/api/user/pay', userPay);
 app.use('/api/products', products);
 

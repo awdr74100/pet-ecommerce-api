@@ -19,7 +19,7 @@
 
 4. POST 檢查管理員是否持續登入 => /api/admin/check
 
-- (200):true - interval > 5 ? 刷新 : 不刷新
+- (200):true - interval < 5 ? 刷新 : 不刷新
 - (200):false - 未帶有訪問令牌
 - (200):false - 無效的訪問令牌
 
@@ -74,14 +74,14 @@
 
 ---
 
-0. GET 取得訂單列表 => /api/admin/orders
+13. GET 取得訂單列表 => /api/admin/orders
 
 - (200):true - { orders }
 - (500):false - error.message
 
 ---
 
-13. POST 上傳圖片 => /api/admin/upload
+14. POST 上傳圖片 => /api/admin/upload
 
 - (200):true - { 圖片網址 }
 - (200):false - 欄位輸入不正確
@@ -91,12 +91,12 @@
 
 ---
 
-14. GET 取得產品列表 => /api/products
+15. GET 取得產品列表 => /api/products
 
 - (200):truw - { products }
 - (500):false - error.message
 
-15. GET 取得單一產品細節 => /api/products/:id
+16. GET 取得單一產品細節 => /api/products/:id
 
 - (200):true - { product }
 - (200):false - 找不到產品
@@ -105,7 +105,7 @@
 
 ---
 
-16. POST 用戶註冊 => /api/user/signup
+17. POST 用戶註冊 => /api/user/signup
 
 - (200):true - 註冊成功
 - (200):false - 無效電子郵件
@@ -113,59 +113,59 @@
 - (200):false - 密碼強度不夠
 - (500):false - error.message
 
-17. POST 用戶登入 => /api/user/signin
+18. POST 用戶登入 => /api/user/signin
 
 - (200):true - { user }
 - (200):false - 無效電子郵件
 - (200):false - 帳號或密碼錯誤 / 3
 - (500):false - error.message
 
-18. POST 用戶登出 => /api/user/signout
+19. POST 用戶登出 => /api/user/signout
 
 - (200):true - 已登出
 
-19. POST 檢查用戶是否持續登入 => /api/user/check
+20. POST 檢查用戶是否持續登入 => /api/user/check
 
-- (200):true - interval > 5 ? 刷新 : 不刷新
+- (200):true - interval < 5 ? 刷新 : 不刷新
 - (200):false - 未帶有訪問令牌
 - (200):false - 無效的訪問令牌
 
 ---
 
-20. POST 產品加入購物車 => /api/user/cart
+21. POST 產品加入購物車 => /api/user/cart
 
 - (200):true - 已加入購物車
 - (200):false - 找不到產品
 - (200):false - 產品未啟用
-- (200):false - 庫存不足 \* 2
+- (200):false - 庫存不足 / 2
 - (500):false - error.message
 
-21. GET 取得購物車產品列表 => /api/user/cart
+22. GET 取得購物車產品列表 => /api/user/cart
 
 - (200):true - { cart }
 - (500):false - error.message
 
-22. PATCH 修改購物車產品購買數量 => /api/user/cart/:id
+23. PATCH 修改購物車產品購買數量 => /api/user/cart/:id
 
 - (200):true - 已修改產品購買數量
 - (200):false - 找不到產品
 - (200):false - 庫存不足
 - (500):false - error.message
 
-23. DELETE 刪除購物車產品 => /api/user/cart/:id
+24. DELETE 刪除購物車產品 => /api/user/cart/:id
 
 - (200):true - 已刪除購物車產品
 - (200):false - 找不到產品
 - (500):false - error.message
 
-24. DELETE 清空購物車 => /api/user/cart
+25. DELETE 清空購物車 => /api/user/cart
 
 - (200):true - 已清空購物車
 - (500):false - error.message
 
 ---
 
-25. POST 套用優惠卷 => /api/user/coupon
+26. POST 套用優惠卷 => /api/user/coupon
 
 - (200):true - 已套用優惠卷
 - (200):false - 找不到優惠卷
@@ -175,7 +175,7 @@
 
 ---
 
-26. POST 建立訂單 => /api/user/order
+27. POST 建立訂單 => /api/user/order
 
 - (200):true - 已建立訂單
 - (200):false - 購物車目前為空
@@ -183,18 +183,20 @@
 - (200):false - 購買人資料為必填
 - (500):false - error.message
 
-27. GET 取得訂單列表 => /api/user/order
+28. GET 取得訂單列表 => /api/user/order
 
 - (200):true - { orders }
 - (500):false - error.message
 
-28. GET 取得某一筆訂單 => /api/user/order/:id
+29. GET 取得某一筆訂單 => /api/user/order/:id
 
 - (200):true - { order }
 - (200):true - 找不到訂單
 - (500):false - error.messahe
 
-29. POST 結帳付款 => /api/user/pay/:id
+---
+
+30. POST 結帳付款 => /api/user/pay/:id
 
 - (200):true - 付款完成
 - (200):false - 找不到訂單
