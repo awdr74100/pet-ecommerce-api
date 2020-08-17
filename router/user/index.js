@@ -35,7 +35,7 @@ router.post('/signin', async (req, res) => {
       const snapshot = await db.ref('/user').child(user.uid).once('value');
       if (!snapshot.exists()) throw new Error('user-not-found');
       const { nickname } = snapshot.val();
-      const uToken = jwt.sign({ uid: user.uid }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
+      const uToken = jwt.sign({ uid: user.uid, role: 'user' }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
       return res
         .cookie('uToken', uToken, {
           httpOnly: true,
@@ -69,7 +69,7 @@ router.post('/check', (req, res) => {
   const now = new Date().getMinutes();
   const interval = exp - now < 0 ? 60 + (exp - now) : exp - now;
   if (interval < 5) {
-    const uToken = jwt.sign({ id: req.user.id }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
+    const uToken = jwt.sign({ id: req.user.id, role: 'user' }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
     return res
       .cookie('uToken', uToken, {
         httpOnly: true,

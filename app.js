@@ -3,40 +3,42 @@ const app = require('express')();
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const expressJwt = require('express-jwt');
+const jwt = require('jsonwebtoken');
 
 const corsOptions = {
   credentials: true,
   origin: ['http://localhost:3001'],
 };
 
-const expressJwtOptions = {
-  secret: process.env.JWT_SECRET,
-  algorithms: ['HS256'],
-  getToken: function fromHeaderOrQuerystring(req) {
-    const role = /^\/api\/(?!admin)/.test(req.originalUrl) ? 'user' : 'admin';
-    if (role === 'user' && req.cookies.uToken) return req.cookies.uToken;
-    if (role === 'admin' && req.cookies.aToken) return req.cookies.aToken;
-    return null;
-  },
-};
-
-const expressJwtUnless = {
-  path: [
-    // /^\/*/,
-    { url: /^\/api\/products/ },
-    { url: /^\/api\/admin\/signin$/ },
-    { url: /^\/api\/admin\/signup$/ },
-    { url: /^\/api\/user\/signin$/ },
-    { url: /^\/api\/user\/signup$/ },
-  ],
-};
+const jwtUnless = [
+  /^\/api\/products/,
+  /^\/api\/admin\/signin$/,
+  /^\/api\/admin\/signup$/,
+  /^\/api\/user\/signin$/,
+  /^\/api\/user\/signup$/,
+];
 
 app.use(cors(corsOptions));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(expressJwt(expressJwtOptions).unless(expressJwtUnless));
+
+// jwt middleware
+app.use((req, res, next) => {
+  const isMatch = jwtUnless.some((rx) => rx.test(req.originalUrl));
+  if (isMatch) return next();
+  const role = /^\/api\/(?!admin)/.test(req.originalUrl) ? 'user' : 'admin';
+  const token = role === 'user' ? req.cookies.uToken : req.cookies.aToken;
+  try {
+    const decoded = jwt.verify(token, `${process.env.JWT_SECRET}`);
+    if (decoded.role !== role) throw new Error('jwt invalid');
+    console.log(decoded);
+    req.user = decoded;
+    return next();
+  } catch (error) {
+    throw new Error(error.message);
+  }
+});
 
 // import Router
 const admin = require('./router/admin/index');
@@ -65,8 +67,9 @@ app.use('/api/products', products);
 
 // error handler
 app.use((err, req, res, next) => {
-  if (err.code === 'credentials_required') return res.send({ success: false, message: '未帶有訪問令牌' });
-  if (err.code === 'invalid_token') return res.send({ success: false, message: '無效的訪問令牌' });
+  if (err.message === 'jwt invalid') return res.send({ success: false, message: '無效的訪問令牌' });
+  if (err.message === 'jwt expired') return res.send({ success: false, message: '訪問令牌已過期' });
+  if (err.message === 'jwt must be provided') return res.send({ success: false, message: '未帶有訪問令牌' });
   return res.send({ success: false, message: err.message });
 });
 
