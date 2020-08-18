@@ -16,6 +16,7 @@ const jwtUnless = [
   /^\/api\/admin\/signup$/,
   /^\/api\/user\/signin$/,
   /^\/api\/user\/signup$/,
+  /^\/api\/user\/reset$/,
 ];
 
 app.use(cors(corsOptions));
@@ -32,7 +33,6 @@ app.use((req, res, next) => {
   try {
     const decoded = jwt.verify(token, `${process.env.JWT_SECRET}`);
     if (decoded.role !== role) throw new Error('jwt invalid');
-    console.log(decoded);
     req.user = decoded;
     return next();
   } catch (error) {
@@ -53,6 +53,7 @@ const userOrders = require('./router/user/orders');
 const userPay = require('./router/user/pay');
 const products = require('./router/products');
 
+// set Router
 app.use('/api/admin', admin);
 app.use('/api/admin/products', adminProducts);
 app.use('/api/admin/coupons', adminCoupons);

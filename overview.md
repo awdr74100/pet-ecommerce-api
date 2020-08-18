@@ -130,9 +130,15 @@
 - (200):false - 未帶有訪問令牌
 - (200):false - 無效的訪問令牌
 
+21. POST 密碼重置 => /api/user/reset
+
+- (200):true - 發送成功
+- (200):false - 無效電子郵件
+- (200):false - 找不到用戶
+
 ---
 
-21. POST 產品加入購物車 => /api/user/cart
+22. POST 產品加入購物車 => /api/user/cart
 
 - (200):true - 已加入購物車
 - (200):false - 找不到產品
@@ -140,32 +146,32 @@
 - (200):false - 庫存不足 / 2
 - (500):false - error.message
 
-22. GET 取得購物車產品列表 => /api/user/cart
+23. GET 取得購物車產品列表 => /api/user/cart
 
 - (200):true - { cart }
 - (500):false - error.message
 
-23. PATCH 修改購物車產品購買數量 => /api/user/cart/:id
+24. PATCH 修改購物車產品購買數量 => /api/user/cart/:id
 
 - (200):true - 已修改產品購買數量
 - (200):false - 找不到產品
 - (200):false - 庫存不足
 - (500):false - error.message
 
-24. DELETE 刪除購物車產品 => /api/user/cart/:id
+25. DELETE 刪除購物車產品 => /api/user/cart/:id
 
 - (200):true - 已刪除購物車產品
 - (200):false - 找不到產品
 - (500):false - error.message
 
-25. DELETE 清空購物車 => /api/user/cart
+26. DELETE 清空購物車 => /api/user/cart
 
 - (200):true - 已清空購物車
 - (500):false - error.message
 
 ---
 
-26. POST 套用優惠卷 => /api/user/coupon
+27. POST 套用優惠卷 => /api/user/coupon
 
 - (200):true - 已套用優惠卷
 - (200):false - 找不到優惠卷
@@ -175,7 +181,7 @@
 
 ---
 
-27. POST 建立訂單 => /api/user/order
+28. POST 建立訂單 => /api/user/order
 
 - (200):true - 已建立訂單
 - (200):false - 購物車目前為空
@@ -183,12 +189,12 @@
 - (200):false - 購買人資料為必填
 - (500):false - error.message
 
-28. GET 取得訂單列表 => /api/user/order
+29. GET 取得訂單列表 => /api/user/order
 
 - (200):true - { orders }
 - (500):false - error.message
 
-29. GET 取得某一筆訂單 => /api/user/order/:id
+30. GET 取得某一筆訂單 => /api/user/order/:id
 
 - (200):true - { order }
 - (200):true - 找不到訂單
@@ -196,7 +202,7 @@
 
 ---
 
-30. POST 結帳付款 => /api/user/pay/:id
+31. POST 結帳付款 => /api/user/pay/:id
 
 - (200):true - 付款完成
 - (200):false - 找不到訂單
