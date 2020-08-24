@@ -6,26 +6,27 @@ router.post('/', async (req, res) => {
   const { uid } = req.user;
   const { productId, qty } = req.body;
   try {
-    // 檢查產品是否存在或未啟用或庫存足夠
+    // 檢查產品是否存在或已啟用
     const productSnapshot = await db.ref('/products').child(productId).once('value');
     if (!productSnapshot.exists()) return res.send({ success: false, message: '找不到產品' });
     const product = productSnapshot.val();
     if (!product.is_enabled) return res.send({ success: false, message: '產品未啟用' });
-    const cartSnapshot = await db.ref('/carts').child(uid).once('value');
-    const cart = cartSnapshot.val() || [];
-    const cartProduct = Object.entries(cart).find(([, value]) => value.productId === productId);
-    // 加入購物車 (存在購物車)
+    // 檢查是否已存在購物車
+    const cartProductsSnapshot = await db.ref('/carts').child(uid).once('value');
+    const cartProducts = cartProductsSnapshot.val() || [];
+    const cartProduct = Object.entries(cartProducts).find((cartProductEntries) => {
+      const [, cartProductContent] = cartProductEntries;
+      return cartProductContent.productId === productId;
+    });
+    // 存在購物車 (庫存足夠下，更新產品購買數量)
     if (cartProduct) {
       const [cartProductId, cartProductContent] = cartProduct;
-      if (product.stock - (cartProductContent.qty + qty) < 0) return res.send({ success: false, message: '庫存不足' });
-      await db
-        .ref('/carts')
-        .child(uid)
-        .child(cartProductId)
-        .update({ qty: cartProductContent.qty + qty });
+      const newQty = cartProductContent.qty + qty;
+      if (product.stock - newQty < 0) return res.send({ success: false, message: '庫存不足' });
+      await db.ref('/carts').child(uid).child(cartProductId).update({ qty: newQty });
       return res.send({ success: true, message: '已加入購物車' });
     }
-    // 加入購物車 (不存在購物車)
+    // 不存在購物車 (庫存足夠下，將產品加入購物車)
     if (product.stock - qty < 0) return res.send({ success: false, message: '庫存不足' });
     await db.ref('/carts').child(uid).push({
       coupon: '',
@@ -43,8 +44,8 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   const { uid } = req.user;
   try {
-    const cartSnapshot = await db.ref('carts').child(uid).once('value');
-    if (!cartSnapshot.exists()) {
+    const cartProductsSnapshot = await db.ref('/carts').child(uid).once('value');
+    if (!cartProductsSnapshot.exists()) {
       return res.send({
         success: true,
         cart: [],
@@ -52,31 +53,54 @@ router.get('/', async (req, res) => {
         final_total: 0,
       });
     }
-    const cart = cartSnapshot.val();
+    const cartProducts = cartProductsSnapshot.val();
     const productsSnapshot = await db.ref('/products').once('value');
-    const products = productsSnapshot.val();
-    const cartToArray = Object.entries(cart).reduce((arr, cartProduct) => {
-      const [cartProductId, { coupon, productId, qty }] = cartProduct;
-      const product = products[productId];
-      return arr.concat({
-        id: cartProductId,
-        coupon,
-        product: { id: productId, ...product },
-        qty,
-        total: product.price * qty,
-        final_total: Math.round(product.price * qty * ((coupon.percent || 100) / 100)),
-      });
+    const products = productsSnapshot.val() || {};
+    let cartProductsTotal = 0;
+    let cartProductsFinalTotal = 0;
+    const unlistedProducts = {};
+    // 取得購物車產品列表 (存在且啟用)
+    const listedProducts = Object.entries(cartProducts).reduce((arr, cartProductEntries) => {
+      const cacheUnlistedProducts = arr;
+      const [cartProductId, { coupon, productId, qty }] = cartProductEntries;
+      // 產品存在且啟用
+      if (products[productId] && products[productId].is_enabled) {
+        const total = products[productId].price * qty;
+        const finalTotal = Math.round(total * ((coupon.percent || 100) / 100));
+        cartProductsTotal += total;
+        cartProductsFinalTotal += finalTotal;
+        return [
+          ...cacheUnlistedProducts,
+          {
+            id: cartProductId,
+            coupon,
+            product: { id: productId, ...products[productId] },
+            qty,
+            total,
+            final_total: finalTotal,
+          },
+        ];
+      }
+      // 產品遭下架或移除
+      unlistedProducts[cartProductId] = null;
+      return [...cacheUnlistedProducts];
     }, []);
-    let [total, finalTotal] = [0, 0];
-    cartToArray.forEach((item) => {
-      total += item.total;
-      finalTotal += item.final_total;
-    });
+    // 移除已下架或未啟用購物車產品
+    if (Object.keys(unlistedProducts).length > 0) {
+      await db.ref('/carts').child(uid).update(unlistedProducts);
+      return res.send({
+        success: true,
+        cart: listedProducts,
+        total: cartProductsTotal,
+        final_total: cartProductsFinalTotal,
+        message: `${Object.keys(unlistedProducts).length} 樣商品遭下架或移除`,
+      });
+    }
     return res.send({
       success: true,
-      cart: cartToArray,
-      total,
-      final_total: finalTotal,
+      cart: listedProducts,
+      total: cartProductsTotal,
+      final_total: cartProductsFinalTotal,
     });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
@@ -106,10 +130,20 @@ router.patch('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { uid } = req.user;
   const { id } = req.params;
+  const ids = id.split(',').map((cartProductId) => cartProductId.trim());
+  if (ids.length >= 30) return res.send({ success: false, message: '超過批量刪除上限' });
+  const deleteCartProducts = ids.reduce((arr, cartProductId) => {
+    const cacheCartProducts = arr;
+    cacheCartProducts[cartProductId] = null;
+    return cacheCartProducts;
+  }, {});
   try {
-    const cartProductSnapshot = await db.ref('/carts').child(uid).child(id).once('value');
-    if (!cartProductSnapshot.exists()) return res.send({ success: false, message: '找不到產品' });
-    await db.ref('/carts').child(uid).child(id).remove();
+    const cartProductsSnapshot = await db.ref('/carts').child(uid).once('value');
+    const cartProducts = cartProductsSnapshot.val() || [];
+    const cartProductsKey = Object.keys(cartProducts);
+    const exists = ids.every((cartProductId) => cartProductsKey.includes(cartProductId));
+    if (!exists) return res.send({ success: false, message: '找不到產品' });
+    await db.ref('/carts').child(uid).update(deleteCartProducts);
     return res.send({ success: true, message: '已刪除購物車產品' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });

@@ -13,7 +13,8 @@ router.post('/', async (req, res) => {
     description: data.description || '',
     content: data.content || '',
     is_enabled: data.is_enabled === undefined ? true : data.is_enabled,
-    stock: data.stock || 1,
+    sales: data.sales || 0,
+    stock: data.stock || 0,
     imgUrl: data.imgUrl || '',
     created_at: Date.now(),
   };
@@ -28,12 +29,15 @@ router.post('/', async (req, res) => {
 // 取得產品列表
 router.get('/', async (req, res) => {
   try {
-    const snapshot = await db.ref('/products').once('value');
-    const products = snapshot.val() || [];
-    const productsToArray = Object.entries(products).reduce((arr, [id, value]) => {
-      const newArr = arr.concat({ id, ...value });
-      return newArr;
-    }, []);
+    const productsSnapshot = await db.ref('/products').once('value');
+    const products = productsSnapshot.val() || [];
+    const productsToArray = Object.keys(products).map((productId) => {
+      const product = {
+        id: productId,
+        ...products[productId],
+      };
+      return product;
+    });
     return res.send({ success: true, products: productsToArray });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
@@ -43,12 +47,11 @@ router.get('/', async (req, res) => {
 // 修改產品
 router.patch('/:id', async (req, res) => {
   const { id } = req.params;
-  const update = req.body;
-  const product = { ...update };
+  const productData = req.body;
   try {
-    const snapshot = await db.ref('/products').child(id).once('value');
-    if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });
-    await db.ref('/products').child(id).update(product);
+    const productSnapshot = await db.ref('/products').child(id).once('value');
+    if (!productSnapshot.exists()) return res.send({ success: false, message: '找不到產品' });
+    await db.ref('/products').child(id).update(productData);
     return res.send({ success: true, message: '已修改產品' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });
@@ -58,10 +61,20 @@ router.patch('/:id', async (req, res) => {
 // 刪除產品
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
+  const ids = id.split(',').map((productId) => productId.trim());
+  if (ids.length >= 30) return res.send({ success: false, message: '超過批量刪除上限' });
+  const deleteProducts = ids.reduce((arr, productId) => {
+    const cacheProducts = arr;
+    cacheProducts[productId] = null;
+    return cacheProducts;
+  }, {});
   try {
-    const snapshot = await db.ref('/products').child(id).once('value');
-    if (!snapshot.exists()) return res.send({ success: false, message: '找不到產品' });
-    await db.ref('/products').child(id).remove();
+    const productsSnapshot = await db.ref('/products').once('value');
+    const products = productsSnapshot.val() || [];
+    const productsKey = Object.keys(products);
+    const exists = ids.every((productId) => productsKey.includes(productId));
+    if (!exists) return res.send({ success: false, message: '找不到產品' });
+    await db.ref('/products').update(deleteProducts);
     return res.send({ success: true, message: '已刪除產品' });
   } catch (error) {
     return res.status(500).send({ success: false, message: error.message });

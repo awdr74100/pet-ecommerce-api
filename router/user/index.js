@@ -68,7 +68,7 @@ router.post('/check', (req, res) => {
   const exp = new Date(req.user.exp * 1000).getMinutes();
   const now = new Date().getMinutes();
   const interval = exp - now < 0 ? 60 + (exp - now) : exp - now;
-  if (interval < 5) {
+  if (interval < 10) {
     const uToken = jwt.sign({ id: req.user.id, role: 'user' }, `${process.env.JWT_SECRET}`, { expiresIn: 60 * 30 });
     return res
       .cookie('uToken', uToken, {
@@ -85,14 +85,14 @@ router.post('/check', (req, res) => {
 // 重置密碼
 router.post('/reset', async (req, res) => {
   const { email } = req.body;
-  try {
-    await auth.sendPasswordResetEmail(email);
-    return res.send({ success: true, message: '發送成功' });
-  } catch (error) {
-    if (error.code === 'auth/invalid-email') return res.send({ success: false, message: '無效電子郵件' });
-    if (error.code === 'auth/user-not-found') return res.send({ success: false, message: '找不到用戶' });
-    return res.status(500).send({ success: false, message: error.message });
-  }
+  auth
+    .sendPasswordResetEmail(email)
+    .then(() => res.send({ success: true, message: '發送成功' }))
+    .catch((error) => {
+      if (error.code === 'auth/invalid-email') return res.send({ success: false, message: '無效電子郵件' });
+      if (error.code === 'auth/user-not-found') return res.send({ success: false, message: '找不到用戶' });
+      return res.status(500).send({ success: false, message: error.message });
+    });
 });
 
 module.exports = router;
