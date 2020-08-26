@@ -126,7 +126,7 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// 刪除購物車產品
+// 刪除購物車產品 (接受批次處理)
 router.delete('/:id', async (req, res) => {
   const { uid } = req.user;
   const { id } = req.params;

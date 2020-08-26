@@ -57,7 +57,31 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// 刪除優惠卷
+// 修改優惠卷啟用狀態 (接受批次處理)
+router.patch('/:id/is_enabled', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const ids = id.split(',').map((couponId) => couponId.trim());
+  if (ids.length >= 30) return res.send({ success: false, message: '超過批量修改上限' });
+  const updateCoupons = ids.reduce((arr, couponId) => {
+    const cacheCoupons = arr;
+    cacheCoupons[`${couponId}/is_enabled`] = status;
+    return cacheCoupons;
+  }, {});
+  try {
+    const couponsSnapshot = await db.ref('/coupons').once('value');
+    const coupons = couponsSnapshot.val() || [];
+    const couponsKey = Object.keys(coupons);
+    const exists = ids.every((couponKey) => couponsKey.includes(couponKey));
+    if (!exists) return res.send({ success: false, message: '找不到優惠卷' });
+    await db.ref('/coupons').update(updateCoupons);
+    return res.send({ success: true, message: '已修改狀態' });
+  } catch (error) {
+    return res.status(500).send({ success: false, message: error.message });
+  }
+});
+
+// 刪除優惠卷 (接受批次處理)
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   const ids = id.split(',').map((couponId) => couponId.trim());

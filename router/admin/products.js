@@ -58,7 +58,31 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// 刪除產品
+// 修改產品啟用狀態 (接受批次處理)
+router.patch('/:id/is_enabled', async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const ids = id.split(',').map((productId) => productId.trim());
+  if (ids.length >= 30) return res.send({ success: false, message: '超過批量修改上限' });
+  const updateProducts = ids.reduce((arr, productId) => {
+    const cacheProducts = arr;
+    cacheProducts[`${productId}/is_enabled`] = status;
+    return cacheProducts;
+  }, {});
+  try {
+    const productsSnapshot = await db.ref('/products').once('value');
+    const products = productsSnapshot.val() || [];
+    const productsKey = Object.keys(products);
+    const exists = ids.every((productId) => productsKey.includes(productId));
+    if (!exists) return res.send({ success: false, message: '找不到產品' });
+    await db.ref('/products').update(updateProducts);
+    return res.send({ success: true, message: '已修改狀態' });
+  } catch (error) {
+    return res.status(500).send({ success: false, message: error.message });
+  }
+});
+
+// 刪除產品 (接受批次處理)
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   const ids = id.split(',').map((productId) => productId.trim());
