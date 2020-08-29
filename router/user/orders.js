@@ -5,7 +5,7 @@ const { db } = require('../../connection/firebase-admin');
 router.post('/', async (req, res) => {
   const { uid } = req.user;
   const { user, message } = req.body;
-  const { paymentMethod, shippingMethod } = req.body;
+  const { payment_method: paymentMethod, shipping_method: shippingMethod } = req.body;
   if (!user) return res.send({ success: false, message: '購買人資料為必填' });
   if (!message) return res.send({ success: false, message: '留言欄位為必填' });
   try {
@@ -140,7 +140,7 @@ router.get('/', async (req, res) => {
     const ordersToArray = Object.keys(orders).map((orderId) => {
       const order = orders[orderId];
       let [newStatus, newCompleteDate] = [false, false];
-      // 包裹已到達 (shipping -> arrived)
+      // 包裹已送達 (shipping -> arrived)
       if (order.status === 'shipping' && order.arrival_date < Date.now()) {
         adjustOrdersStatus[`${orderId}/status`] = 'arrived';
         newStatus = 'arrived';

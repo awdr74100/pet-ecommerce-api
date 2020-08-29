@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
       const uOrders = Object.keys(orders[uid]).map((uOrderId) => {
         const uOrder = orders[uid][uOrderId];
         let [newStatus, newCompleteDate] = [false, false];
-        // 包裹已到達 (shipping -> arrived)
+        // 包裹已送達 (shipping -> arrived)
         if (uOrder.status === 'shipping' && uOrder.arrival_date < Date.now()) {
           adjustUserOrdersStatus[`${uid}/${uOrderId}/status`] = 'arrived';
           newStatus = 'arrived';
