@@ -96,7 +96,7 @@
     - (200):true - { orders }
     - (500):false - error.message
 
-16. PATCH 訂單出貨 => /api/admin/orders/:uid/:id/ship
+16. PATCH 訂單出貨 (toship -> shipping) => /api/admin/orders/:uid/:id/ship
 
     - (200):true - 訂單已出貨
     - (200):false -找不到訂單
@@ -224,14 +224,14 @@
     - (200):true - 已取消訂單
     - (200):false - 找不到訂單
     - (200):false - 操作異常
-    - (200):false - 訂單已完成結帳
+    - (500):false - error.message
 
 33. PATCH 完成訂單 (模擬 arrived -> completed) => /api/user/orders/:id/complete
 
     - (200):true - 已完成訂單
     - (200):false - 找不到訂單
     - (200):false - 操作異常
-    - (200):false - 訂單已完成結帳
+    - (500):false - error.message
 
 34. GET 取得訂單列表 (同時檢查訂單狀態) => /api/user/orders
 

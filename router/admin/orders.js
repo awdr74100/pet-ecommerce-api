@@ -44,7 +44,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-// 訂單出貨
+// 訂單出貨 (toship -> shipping)
 router.patch('/:uid/:id/ship', async (req, res) => {
   const { uid, id } = req.params;
   try {
@@ -60,8 +60,7 @@ router.patch('/:uid/:id/ship', async (req, res) => {
       .update({
         status: 'shipping',
         shipping_date: Date.now(),
-        arrival_date: Date.now() + 1000 * 60,
-        // arrival_date: Date.now() + 1000 * 60 * 60 * 24 * 2, // 模擬 2 天後到達
+        arrival_date: Date.now() + 86400000 * 2, // 模擬 2 天後到達
       });
     return res.send({ success: true, message: '訂單已出貨' });
   } catch (error) {
