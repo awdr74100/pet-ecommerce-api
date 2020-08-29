@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const { db } = require('../../connection/firebase-admin');
 
-// 結帳付款
+// 結帳付款 (模擬 unpaid -> toship)
 router.post('/:id', async (req, res) => {
   const { uid } = req.user;
   const { id } = req.params;
@@ -9,8 +9,8 @@ router.post('/:id', async (req, res) => {
     const orderSnapshot = await db.ref('/orders').child(uid).child(id).once('value');
     if (!orderSnapshot.exists()) return res.send({ success: false, message: '找不到訂單' });
     const order = orderSnapshot.val();
-    if (order.status === 'ispaid') return res.send({ success: true, message: '重複結帳' });
-    if (order.status === 'canceled') return res.send({ success: true, message: '訂單已被取消' });
+    // 限訂單狀態為 unpaid
+    if (order.status !== 'unpaid') return res.send({ success: false, message: '操作異常' });
     const productsSnapshot = await db.ref('/products').once('value');
     const products = productsSnapshot.val() || {};
     const adjustProductsSales = order.cart.reduce((arr, cartProduct) => {
@@ -23,8 +23,8 @@ router.post('/:id', async (req, res) => {
     }, {});
     await db.ref('/products').update(adjustProductsSales);
     await db.ref('/orders').child(uid).child(id).update({
+      status: 'toship',
       paid_date: Date.now(),
-      status: 'ispaid',
     });
     return res.send({ success: true, message: '結帳完成' });
   } catch (error) {

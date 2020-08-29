@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
     is_enabled: data.is_enabled === undefined ? true : data.is_enabled,
     percent: data.percent || 100,
     effective_date: data.effective_date || Date.now(), // 預設當下開始生效
-    due_date: data.due_date || Date.now() + 1000 * 60 * 60 * 24 * 7, // 預設 7 天到期
+    due_date: data.due_date || Date.now() + 86400000 * 7, // 預設 7 天到期
     code: data.code || '',
     created_at: Date.now(),
   };
