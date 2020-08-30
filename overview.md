@@ -1,8 +1,9 @@
 1.  POST 管理員註冊 => /api/admin/signup
 
     - (200):true - 註冊成功
+    - (200):false - 用戶名重複
     - (200):false - 無效電子郵件
-    - (200):false - 已存在用戶
+    - (200):false - 信箱已被使用
     - (200):false - 密碼強度不夠
     - (500):false - error.message
 
@@ -132,8 +133,9 @@
 20. POST 用戶註冊 => /api/user/signup
 
     - (200):true - 註冊成功
+    - (200):false - 用戶名重複
     - (200):false - 無效電子郵件
-    - (200):false - 已存在用戶
+    - (200):false - 信箱已被使用
     - (200):false - 密碼強度不夠
     - (500):false - error.message
 
