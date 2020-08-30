@@ -10,7 +10,7 @@ router.post('/signup', async (req, res) => {
   const { email, password, username } = req.body;
   try {
     const userNameSnapshot = await db.ref('/users/names').child(username.toLowerCase()).once('value');
-    if (userNameSnapshot.exists()) return res.send({ success: false, message: '用戶名重複' });
+    if (userNameSnapshot.exists()) return res.send({ success: false, message: '用戶名已被使用' });
     return auth
       .createUserWithEmailAndPassword(email, password)
       .then(async ({ user }) => {
