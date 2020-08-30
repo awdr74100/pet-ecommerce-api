@@ -1,0 +1,7 @@
+@BASEURL = http://localhost:3000
+
+### 取得產品列表
+GET {{BASEURL}}/api/products
+
+### 取得單一產品細節
+GET {{BASEURL}}/api/products/-MFRWcNqSl6OlynA-I-

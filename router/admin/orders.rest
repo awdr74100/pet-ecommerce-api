@@ -1,0 +1,7 @@
+@BASEURL = http://localhost:3000
+
+### 取得訂單列表
+GET {{BASEURL}}/api/admin/orders
+
+### 訂單出貨
+PATCH {{BASEURL}}/api/admin/orders/lj0MOlW3V9ScoFINjrKJLL56AAT2/-MFth9G2t2IIj2gAMjN3/ship

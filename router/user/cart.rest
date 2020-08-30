@@ -1,0 +1,27 @@
+@BASEURL = http://localhost:3000
+
+### 產品加入購物車
+POST {{BASEURL}}/api/user/cart
+Content-Type: application/json
+
+{
+  "productId": "-MFWAhEDtr5gyvd7eFKc",
+  "qty": 1
+}
+
+### 取得購物車產品列表
+GET {{BASEURL}}/api/user/cart
+
+### 修改購物車產品購買數量
+PATCH {{BASEURL}}/api/user/cart/-MFVBsuIGToezWSdzTme
+Content-Type: application/json
+
+{
+  "qty": 8
+}
+
+### 刪除購物車產品
+DELETE {{BASEURL}}/api/user/cart/-MFVBsuIGToezWSdzTme
+
+### 清空購物車
+DELETE {{BASEURL}}/api/user/cart

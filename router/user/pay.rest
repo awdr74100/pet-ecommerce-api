@@ -1,0 +1,4 @@
+@BASEURL = http://localhost:3000
+
+### 結帳付款
+POST {{BASEURL}}/api/user/pay/-MFth9G2t2IIj2gAMjN3

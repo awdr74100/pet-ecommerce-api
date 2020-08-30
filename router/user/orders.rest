@@ -1,0 +1,29 @@
+@BASEURL = http://localhost:3000
+
+### 建立訂單
+POST {{BASEURL}}/api/user/orders
+Content-Type: application/json
+
+{
+  "user":{
+    "name": "藍奕濡",
+    "email": "4a6g0068@stust.edu.tw",
+    "tel": "0954857487",
+    "address": "外星"
+  },
+  "message": "請使用進行包裝，謝謝",
+  "payment_method": "credit_card",
+  "shipping_method": "t-cat"
+}
+
+### 取消訂單
+PATCH {{BASEURL}}/api/user/orders/-MFth9G2t2IIj2gAMjN3/cancel
+
+### 完成訂單
+PATCH {{BASEURL}}/api/user/orders/-MFth9G2t2IIj2gAMjN3/complete
+
+### 取得訂單列表
+GET {{BASEURL}}/api/user/orders
+
+### 取得某一筆訂單
+GET {{BASEURL}}/api/user/orders/-MFtR_GnG00Saq1LzNtz

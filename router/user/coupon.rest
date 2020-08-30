@@ -1,0 +1,9 @@
+@BASEURL = http://localhost:3000
+
+### 套用優惠卷
+POST {{BASEURL}}/api/user/coupon
+Content-Type: application/json
+
+{
+  "code": "a4"
+}

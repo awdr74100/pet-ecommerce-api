@@ -1,0 +1,42 @@
+@BASEURL = http://localhost:3000
+
+### 新增產品
+POST {{BASEURL}}/api/admin/products
+Content-Type: application/json
+
+{
+  "title": "PUMA 水壺",
+  "category": "運動用品",
+  "origin_price": 400,
+  "price": 550,
+  "unit": "個",
+  "description": "3000毫升，滿足你日常所需",
+  "content": "使用外星生物科技製作",
+  "is_enabled": true,
+  "sales": 6,
+  "stock": 20,
+  "imgUrl": ""
+}
+
+### 取得產品列表
+GET {{BASEURL}}/api/admin/products
+
+### 修改產品
+PATCH {{BASEURL}}/api/admin/products/-MFRKoI6yiXG-lYbHKeC
+Content-Type: application/json
+
+{
+  "is_enabled": false,
+  "sales": 12
+}
+
+### 修改產品啟用狀態 (接受批次處理)
+PATCH {{BASEURL}}/api/admin/products/-MFWAgr96vQtLw8YH9dG,-MFWAhEDtr5gyvd7eFKc/is_enabled
+Content-Type: application/json
+
+{
+  "status": true
+}
+
+### 刪除產品
+DELETE {{BASEURL}}/api/admin/products/-MFRPyoJrULEKpgolIyj, -MFRPz89-AEaVRvX_8-9 
