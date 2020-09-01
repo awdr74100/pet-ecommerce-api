@@ -136,33 +136,36 @@ router.get('/', async (req, res) => {
   try {
     const ordersSnapshot = await db.ref('/orders').child(uid).once('value');
     const orders = ordersSnapshot.val() || [];
-    const adjustOrdersStatus = {};
+    const adjustOrder = {};
     const ordersToArray = Object.keys(orders).map((orderId) => {
       const order = orders[orderId];
-      let [newStatus, newCompleteDate] = [false, false];
-      // 包裹已送達 (shipping -> arrived)
-      if (order.status === 'shipping' && order.arrival_date < Date.now()) {
-        adjustOrdersStatus[`${orderId}/status`] = 'arrived';
+      let [newStatus, newArrivalDate, newCompleteDate] = [false, false, false];
+      // 包裹已送達 (shipping -> arrived) (2天送達)
+      if (order.status === 'shipping' && order.shipping_date + 86400000 * 2 - Date.now() < 0) {
+        adjustOrder[`${orderId}/status`] = 'arrived';
         newStatus = 'arrived';
+        adjustOrder[`${orderId}/arrival_date`] = order.shipping_date + 86400000 * 2;
+        newArrivalDate = order.shipping_date + 86400000 * 2;
       }
-      // 自動完成訂單 (arrived -> completed)
+      // 自動完成訂單 (arrived -> completed) (7天完成)
       if (order.status === 'arrived' && order.arrival_date + 86400000 * 7 - Date.now() < 0) {
-        adjustOrdersStatus[`${orderId}/status`] = 'completed';
-        adjustOrdersStatus[`${orderId}/complete_date`] = order.arrival_date + 86400000 * 7;
-        newCompleteDate = order.arrival_date + 86400000 * 7;
+        adjustOrder[`${orderId}/status`] = 'completed';
         newStatus = 'completed';
+        adjustOrder[`${orderId}/complete_date`] = order.arrival_date + 86400000 * 7;
+        newCompleteDate = order.arrival_date + 86400000 * 7;
       }
       return {
         id: orderId,
         ...order,
         // 覆蓋狀態
-        status: newStatus || order.status,
-        complete_date: newCompleteDate || order.complete_date,
+        status: newStatus || order.status, // 如果更動及覆蓋
+        arrival_date: newArrivalDate || order.arrival_date, // 如果更動及覆蓋
+        complete_date: newCompleteDate || order.complete_date, // 如果更動及覆蓋
       };
     });
     // 更新訂單狀態
-    if (Object.keys(adjustOrdersStatus).length > 0) {
-      await db.ref('/orders').child(uid).update(adjustOrdersStatus);
+    if (Object.keys(adjustOrder).length > 0) {
+      await db.ref('/orders').child(uid).update(adjustOrder);
     }
     return res.send({ success: true, orders: ordersToArray });
   } catch (error) {
