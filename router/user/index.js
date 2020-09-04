@@ -7,7 +7,8 @@ const { auth } = require('../../connection/firebase');
 
 // 用戶註冊
 router.post('/signup', async (req, res) => {
-  const { email, password, username } = req.body;
+  const { email = '', password = '', username = '' } = req.body;
+  if (!email || !password || !username) return res.send({ success: false, message: '資料輸入不正確' });
   try {
     const userNameSnapshot = await db.ref('/users/names').child(username.toLowerCase()).once('value');
     if (userNameSnapshot.exists()) return res.send({ success: false, message: '用戶名已被使用' });
@@ -33,7 +34,8 @@ router.post('/signup', async (req, res) => {
 
 // 用戶登入
 router.post('/signin', async (req, res) => {
-  const { usernameOrEmail = '', password } = req.body;
+  const { usernameOrEmail = '', password = '' } = req.body;
+  if (!usernameOrEmail || !password) return res.send({ success: false, message: '資料輸入不正確' });
   const isEmail = usernameOrEmail.includes('@');
   if (isEmail) {
     return auth
@@ -119,8 +121,9 @@ router.post('/check', (req, res) => {
 
 // 重置密碼
 router.post('/password', async (req, res) => {
-  const { email } = req.body;
-  auth
+  const { email = '' } = req.body;
+  if (!email) return res.send({ success: false, message: '資料輸入不正確' });
+  return auth
     .sendPasswordResetEmail(email)
     .then(() => res.send({ success: true, message: '發送成功' }))
     .catch((error) => {

@@ -1,6 +1,7 @@
 1.  POST 管理員註冊 => /api/admin/signup
 
     - (200):true - 註冊成功
+    - (200):false - 資料輸入不正確
     - (200):false - 用戶名已被使用
     - (200):false - 無效電子郵件
     - (200):false - 信箱已被使用
@@ -10,8 +11,9 @@
 2.  POST 管理員登入 => /api/admin/signin
 
     - (200):true - { admin }
+    - (200):false - 資料輸入不正確
     - (200):false - 無效電子郵件
-    - (200):false - 帳號或密碼錯誤 ~ 3
+    - (200):false - 帳號或密碼錯誤
     - (500):false - error.message
 
 3.  POST 管理員登出 => /api/admin/signout
@@ -133,6 +135,7 @@
 20. POST 用戶註冊 => /api/user/signup
 
     - (200):true - 註冊成功
+    - (200):false - 資料輸入不正確
     - (200):false - 用戶名已被使用
     - (200):false - 無效電子郵件
     - (200):false - 信箱已被使用
@@ -142,8 +145,9 @@
 21. POST 用戶登入 => /api/user/signin
 
     - (200):true - { user }
+    - (200):false - 資料輸入不正確
     - (200):false - 無效電子郵件
-    - (200):false - 帳號或密碼錯誤 ~ 3
+    - (200):false - 帳號或密碼錯誤
     - (500):false - error.message
 
 22. POST 用戶登出 => /api/user/signout
@@ -159,6 +163,7 @@
 24. POST 密碼重置 => /api/user/password
 
     - (200):true - 發送成功
+    - (200):false - 資料輸入不正確
     - (200):false - 無效電子郵件
     - (200):false - 找不到用戶
 

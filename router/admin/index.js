@@ -7,7 +7,8 @@ const { auth } = require('../../connection/firebase');
 
 // 管理員註冊
 router.post('/signup', async (req, res) => {
-  const { email, password, username } = req.body;
+  const { email = '', password = '', username = '' } = req.body;
+  if (!email || !password || !username) return res.send({ success: false, message: '資料輸入不正確' });
   try {
     const userNameSnapshot = await db.ref('/users/names').child(username.toLowerCase()).once('value');
     if (userNameSnapshot.exists()) return res.send({ success: false, message: '用戶名已被使用' });
@@ -33,7 +34,8 @@ router.post('/signup', async (req, res) => {
 
 // 管理員登入
 router.post('/signin', async (req, res) => {
-  const { usernameOrEmail = '', password } = req.body;
+  const { usernameOrEmail = '', password = '' } = req.body;
+  if (!usernameOrEmail || !password) return res.send({ success: false, message: '資料輸入不正確' });
   const isEmail = usernameOrEmail.includes('@');
   if (isEmail) {
     return auth
@@ -55,7 +57,6 @@ router.post('/signin', async (req, res) => {
       .catch((error) => {
         if (error.code === 'auth/invalid-email') return res.send({ success: false, message: '無效電子郵件' });
         if (error.code === 'auth/user-not-found') return res.send({ success: false, message: '帳號或密碼錯誤' });
-        if (error.message === 'user-not-found') return res.send({ success: false, message: '帳號或密碼錯誤' });
         if (error.code === 'auth/wrong-password') return res.send({ success: false, message: '帳號或密碼錯誤' });
         return res.status(500).send({ success: false, message: error.message });
       });
@@ -82,7 +83,6 @@ router.post('/signin', async (req, res) => {
       .catch((error) => {
         if (error.code === 'auth/invalid-email') return res.send({ success: false, message: '無效電子郵件' });
         if (error.code === 'auth/user-not-found') return res.send({ success: false, message: '帳號或密碼錯誤' });
-        if (error.message === 'user-not-found') return res.send({ success: false, message: '帳號或密碼錯誤' });
         if (error.code === 'auth/wrong-password') return res.send({ success: false, message: '帳號或密碼錯誤' });
         return res.status(500).send({ success: false, message: error.message });
       });
