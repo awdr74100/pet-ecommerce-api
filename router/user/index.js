@@ -118,7 +118,7 @@ router.post('/check', (req, res) => {
 });
 
 // 重置密碼
-router.post('/reset', async (req, res) => {
+router.post('/password', async (req, res) => {
   const { email } = req.body;
   auth
     .sendPasswordResetEmail(email)

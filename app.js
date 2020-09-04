@@ -16,7 +16,7 @@ const jwtUnless = [
   /^\/api\/admin\/signup$/,
   /^\/api\/user\/signin$/,
   /^\/api\/user\/signup$/,
-  /^\/api\/user\/reset$/,
+  /^\/api\/user\/password$/,
 ];
 
 app.use(cors(corsOptions));

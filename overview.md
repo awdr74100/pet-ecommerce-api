@@ -156,7 +156,7 @@
     - (200):false - 未帶有訪問令牌
     - (200):false - 無效的訪問令牌
 
-24. POST 密碼重置 => /api/user/reset
+24. POST 密碼重置 => /api/user/password
 
     - (200):true - 發送成功
     - (200):false - 無效電子郵件
