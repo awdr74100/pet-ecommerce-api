@@ -14,8 +14,10 @@ const jwtUnless = [
   /^\/api\/products/,
   /^\/api\/admin\/signin$/,
   /^\/api\/admin\/signup$/,
+  /^\/api\/admin\/signout$/,
   /^\/api\/user\/signin$/,
   /^\/api\/user\/signup$/,
+  /^\/api\/user\/signout$/,
   /^\/api\/user\/password$/,
 ];
 
