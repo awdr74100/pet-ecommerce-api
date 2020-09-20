@@ -6,11 +6,14 @@ router.get('/', async (req, res) => {
   try {
     const ordersSnapshot = await db.ref('/orders').once('value');
     const orders = ordersSnapshot.val() || [];
+    const userDetailsSnapshot = await db.ref('/users').child('details').once('value');
+    const userDetails = userDetailsSnapshot.val() || [];
     const adjustUserOrder = {};
     const ordersToArray = Object.keys(orders).reduce((arr, uid) => {
       const cacheOrdersToArray = arr;
       const uOrders = Object.keys(orders[uid]).map((uOrderId) => {
         const uOrder = orders[uid][uOrderId];
+        const { username } = userDetails[uid];
         let [newStatus, newArrivalDate, newCompleteDate] = [false, false, false];
         // 包裹已送達 (shipping -> arrived) (2天送達)
         if (uOrder.status === 'shipping' && uOrder.shipping_date + 86400000 * 2 - Date.now() < 0) {
@@ -29,6 +32,7 @@ router.get('/', async (req, res) => {
         return {
           uid,
           id: uOrderId,
+          username,
           ...uOrder,
           status: newStatus || uOrder.status, // 如果更動及覆蓋
           arrival_date: newArrivalDate || uOrder.arrival_date, // 如果更動即覆蓋

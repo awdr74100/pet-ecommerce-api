@@ -7,7 +7,6 @@ router.post('/', async (req, res) => {
   const { user, message } = req.body;
   const { payment_method: paymentMethod, shipping_method: shippingMethod } = req.body;
   if (!user) return res.send({ success: false, message: '購買人資料為必填' });
-  if (!message) return res.send({ success: false, message: '留言欄位為必填' });
   try {
     const cartProductsSnapshot = await db.ref('/carts').child(uid).once('value');
     if (!cartProductsSnapshot.exists()) return res.send({ success: false, message: '禁止購物車為空' });
