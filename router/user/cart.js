@@ -78,6 +78,7 @@ router.get('/', async (req, res) => {
             qty,
             total,
             final_total: finalTotal,
+            created_at: cartProductEntries[1].created_at,
           },
         ];
       }
