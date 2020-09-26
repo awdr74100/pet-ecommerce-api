@@ -12,8 +12,8 @@ const corsOptions = {
 
 const jwtUnless = [
   /^\/api\/products/,
+  /^\/api\/coupons/,
   /^\/api\/admin\/signin$/,
-  /^\/api\/admin\/signup$/,
   /^\/api\/admin\/signout$/,
   /^\/api\/user\/signin$/,
   /^\/api\/user\/signup$/,
@@ -54,6 +54,7 @@ const userCoupon = require('./router/user/coupon');
 const userOrders = require('./router/user/orders');
 const userPay = require('./router/user/pay');
 const products = require('./router/products');
+const coupons = require('./router/coupons');
 
 // set Router
 app.use('/api/admin', admin);
@@ -67,6 +68,7 @@ app.use('/api/user/coupon', userCoupon);
 app.use('/api/user/orders', userOrders);
 app.use('/api/user/pay', userPay);
 app.use('/api/products', products);
+app.use('/api/coupons', coupons);
 
 // error handler
 app.use((err, req, res, next) => {

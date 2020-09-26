@@ -16,7 +16,12 @@ router.post('/signup', async (req, res) => {
       .createUserWithEmailAndPassword(email, password)
       .then(async ({ user }) => {
         const setUser = {};
-        setUser[`details/${user.uid}`] = { email, username, role: 'user' };
+        setUser[`details/${user.uid}`] = {
+          email,
+          username,
+          role: 'user',
+          draws: 3, // 抽獎次數
+        };
         setUser[`names/${username.toLowerCase()}`] = user.uid;
         await db.ref('/users').update(setUser);
         return res.send({ success: true, message: '註冊成功' });

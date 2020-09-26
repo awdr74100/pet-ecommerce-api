@@ -7,3 +7,9 @@ Content-Type: application/json
 {
   "code": "a4"
 }
+
+### 取得剩餘抽獎次數
+GET {{BASEURL}}/api/user/coupon/draws
+
+### 取得隨機轉盤優惠卷
+GET {{BASEURL}}/api/user/coupon
