@@ -49,8 +49,8 @@ router.post('/signin', async (req, res) => {
           .cookie('aToken', aToken, {
             httpOnly: true,
             maxAge: 1000 * 60 * 30, // 30min
-            // sameSite: 'none',
-            // secure: true,
+            sameSite: 'none',
+            secure: true,
           })
           .send({ success: true, admin: { email, username } });
       })
@@ -75,8 +75,8 @@ router.post('/signin', async (req, res) => {
           .cookie('aToken', aToken, {
             httpOnly: true,
             maxAge: 1000 * 60 * 30, // 30min
-            // sameSite: 'none',
-            // secure: true,
+            sameSite: 'none',
+            secure: true,
           })
           .send({ success: true, admin: { email, username } });
       })
@@ -94,8 +94,8 @@ router.post('/signin', async (req, res) => {
 // 管理員登出
 router.post('/signout', (req, res) => {
   res.clearCookie('aToken', {
-    // sameSite: 'none',
-    // secure: true,
+    sameSite: 'none',
+    secure: true,
   });
   return res.send({ success: true, message: '已登出' });
 });
@@ -111,8 +111,8 @@ router.post('/check', (req, res) => {
       .cookie('aToken', aToken, {
         httpOnly: true,
         maxAge: 1000 * 60 * 30, // 30min
-        // sameSite: 'none',
-        // secure: true,
+        sameSite: 'none',
+        secure: true,
       })
       .send({ success: true });
   }

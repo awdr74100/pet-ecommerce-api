@@ -54,8 +54,8 @@ router.post('/signin', async (req, res) => {
           .cookie('uToken', uToken, {
             httpOnly: true,
             maxAge: 1000 * 60 * 30, // 30min
-            // sameSite: 'none',
-            // secure: true,
+            sameSite: 'none',
+            secure: true,
           })
           .send({ success: true, user: { email, username } });
       })
@@ -80,8 +80,8 @@ router.post('/signin', async (req, res) => {
           .cookie('uToken', uToken, {
             httpOnly: true,
             maxAge: 1000 * 60 * 30, // 30min
-            // sameSite: 'none',
-            // secure: true,
+            sameSite: 'none',
+            secure: true,
           })
           .send({ success: true, user: { email, username } });
       })
@@ -99,8 +99,8 @@ router.post('/signin', async (req, res) => {
 // 用戶登出
 router.post('/signout', (req, res) => {
   res.clearCookie('uToken', {
-    // sameSite: 'none',
-    // secure: true,
+    sameSite: 'none',
+    secure: true,
   });
   return res.send({ success: true, message: '已登出' });
 });
@@ -116,8 +116,8 @@ router.post('/check', (req, res) => {
       .cookie('uToken', uToken, {
         httpOnly: true,
         maxAge: 1000 * 60 * 30, // 30min
-        // sameSite: 'none',
-        // secure: true,
+        sameSite: 'none',
+        secure: true,
       })
       .send({ success: true });
   }
