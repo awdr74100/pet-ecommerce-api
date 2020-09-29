@@ -6,7 +6,7 @@ const { bucket } = require('../../connection/firebase-admin');
 // 上傳圖片
 router.post('/', upload.single('image'), uploadLimits, async (req, res) => {
   if (!req.file) return res.send({ success: false, message: '欄位輸入不正確' });
-  const filename = `image/${Date.now()}`;
+  const filename = `image/pet_${Date.now()}`;
   const token = uuidv4();
   const options = {
     gzip: true,

@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const corsOptions = {
   credentials: true,
-  origin: ['http://localhost:3001'],
+  origin: ['https://pet-ecommerce.netlify.app'],
 };
 
 const jwtUnless = [
