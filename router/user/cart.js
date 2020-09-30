@@ -86,7 +86,7 @@ router.get('/', async (req, res) => {
       unlistedProducts[cartProductId] = null;
       return [...cacheUnlistedProducts];
     }, []);
-    // 移除已下架或未啟用購物車產品
+    // 移除已下架或移除購物車產品
     if (Object.keys(unlistedProducts).length > 0) {
       await db.ref('/carts').child(uid).update(unlistedProducts);
       return res.send({
