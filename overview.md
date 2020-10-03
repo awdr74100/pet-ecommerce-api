@@ -236,7 +236,6 @@
 34. POST 建立訂單 (unpaid 狀態) => /api/user/orders
 
     - (200):true - 已建立訂單
-    - (200):false - 留言欄位為必填
     - (200):false - 購買人資料為必填
     - (200):false - 禁止購物車為空
     - (200):false - 部分商品庫存不足
