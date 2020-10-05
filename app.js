@@ -5,9 +5,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
 
+const origin = ['https://pet-ecommerce.netlify.app'];
+
 const corsOptions = {
   credentials: true,
-  origin: ['https://pet-ecommerce.netlify.app'],
+  origin: process.env.NODE_ENV === 'development' ? true : origin,
 };
 
 const jwtUnless = [
@@ -22,6 +24,7 @@ const jwtUnless = [
 ];
 
 app.use(cors(corsOptions));
+app.options('*', cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cookieParser());
